@@ -3,14 +3,20 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(name: params[:username])
+    user = User.find_by(name: params[:user][:name])
 
-    if user && user.authenticate(params[:password])
-      session[:user_id] = user.id
-      redirect_to users_hello_path
-    else
-      flash[:warning] = "Invalid Username or Password"
-      redirect_to sessions_new_path
-    end
+    user = user.try(:authenticate, params[:user][:password])
+
+    return redirect_to(controller: 'sessions', action: 'new') unless user
+
+    session[:user_id] = user.id
+
+    redirect_to users_hello_path
+  end
+
+  def destroy
+    session.delete :user_id
+
+    redirect_to '/'
   end
 end
