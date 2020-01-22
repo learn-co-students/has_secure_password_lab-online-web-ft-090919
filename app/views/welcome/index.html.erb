@@ -1,0 +1,9 @@
+<% if logged_in %>
+  <h1>Welcome, <%= current_user.name %></h1>
+  <%= form_tag({controller: :sessions, action: :destroy}, method: :delete) do %>
+    <%= submit_tag :logout %>
+  <% end %>
+<% else %>
+  <%= link_to 'signup', '/signup' %>
+  <%= link_to 'login', '/login' %>
+<% end %>
